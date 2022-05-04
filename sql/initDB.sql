@@ -15,6 +15,27 @@ ALTER TABLE [dbo].[Customers] ADD PRIMARY KEY CLUSTERED
 )WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Product](
+	[id] [int] NOT NULL,
+	[name] [nvarchar](50) NOT NULL,
+	[description] [nvarchar](50) NULL,
+	[quantity] [int] NULL
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Product] ADD PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+
+INSERT [dbo].[Product]([id], [name], [description], [quantity]) VALUES (1, N'', N'', 10);
+INSERT [dbo].[Product]([id], [name], [description], [quantity]) VALUES (2, N'Sliced bread', N'Loaf of fresh sliced wheat bread', 20);
+INSERT [dbo].[Product]([id], [name], [description], [quantity]) VALUES (3, N'Apples', N'Bag of 7 fresh McIntosh apples', 30);
+GO
 
 /*
 	Create schema

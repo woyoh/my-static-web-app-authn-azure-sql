@@ -8,10 +8,10 @@ module.exports = function (context, req) {
     var payload = null;
     var entity = "";
     if (req.params.id) {
-        entity = "customer"
-        payload = { "CustomerId": req.params.id };            
+        entity = "product"
+        payload = { "ProductId": req.params.id };            
     } else {
-        entity = "customers"                
+        entity = "products"                
     }
     
     executeSQL(context, method, entity, payload)
@@ -22,25 +22,8 @@ const executeSQL = (context, verb, entity, payload) => {
     const paramPayload = (payload != null) ? JSON.stringify(payload) : '';
     context.log("payload: " + payload);
 
-    // Create Connection object
-    const connection = new Connection({
-        server: process.env["db_server"],
-        authentication: {
-            type: 'default',
-            options: {
-                userName: process.env["db_user"],
-                password: process.env["db_password"],
-            }
-        },
-        options: {
-            database: process.env["db_database"],
-            encrypt: true,
-            connectTimeout: 15000,
-            validateBulkLoadParameters: true
-        }
-    });
-
-    // let config = {
+    // // Create Connection object
+    // const connection = new Connection({
     //     server: process.env["db_server"],
     //     authentication: {
     //         type: 'default',
@@ -55,12 +38,29 @@ const executeSQL = (context, verb, entity, payload) => {
     //         connectTimeout: 15000,
     //         validateBulkLoadParameters: true
     //     }
-    // };
-    
-    // // Create Connection object
-    // const connection = new Connection(config);
+    // });
 
-    // Create the command to be executed
+    let config = {
+        server: process.env["db_server"],
+        authentication: {
+            type: 'default',
+            options: {
+                userName: process.env["db_user"],
+                password: process.env["db_password"],
+            }
+        },
+        options: {
+            database: process.env["db_database"],
+            encrypt: true,
+            connectTimeout: 15000,
+            validateBulkLoadParameters: true
+        }
+    };
+    
+    // Create Connection object
+    const connection = new Connection(config);
+
+    // Call Procedure
     const request = new Request(`web.${verb}_${entity}`, (err) => {
         if (err) {
             context.log.error(err);            
@@ -78,13 +78,19 @@ const executeSQL = (context, verb, entity, payload) => {
         request.addParameter('Json', TYPES.NVarChar, paramPayload, Infinity);
     }
 
-    // // 1111111111111111111111111111111111111
-    // var request = new Request("select * from dbo.Customers", function(err, rowCount) {
+    // // SQL
+    // var request = new Request("select * from dbo.Product", function(err) {
     //     if (err) {
     //         console.log(err);
-    //     } else {
-    //         console.log(rowCount + ' rows');
+    //         context.res.status = 500;
+    //         context.res.body = "Error executing SQL command";
+    //    } else {
+    //         context.res = {
+    //             body: result
+    //         }
     //     }
+    //     context.done();
+    //     console.log(result);
     // });
     
     // Handle 'connect' event
