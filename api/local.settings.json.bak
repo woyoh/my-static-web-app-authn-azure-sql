@@ -1,0 +1,14 @@
+{
+  "Host": {
+    "CORS": "http://localhost:4200"
+  },
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "db_server": "helloserver01.database.windows.net",
+    "db_database": "TutorialDB",
+    "db_user": "NodeFuncApp",
+    "db_password": "aN0ThErREALLY#$%TRONGpa44w0rd!"
+  }
+}
