@@ -40,17 +40,34 @@ const executeSQL = (context, verb, entity, payload) => {
     //     }
     // });
 
+    // let config = {
+    //     server: process.env["db_server"],
+    //     authentication: {
+    //         type: 'default',
+    //         options: {
+    //             userName: process.env["db_user"],
+    //             password: process.env["db_password"],
+    //         }
+    //     },
+    //     options: {
+    //         database: process.env["db_database"],
+    //         encrypt: true,
+    //         connectTimeout: 15000,
+    //         validateBulkLoadParameters: true
+    //     }
+    // };
+    
     let config = {
-        server: process.env["db_server"],
+        server: "helloserver01.database.windows.net",
         authentication: {
             type: 'default',
             options: {
-                userName: process.env["db_user"],
-                password: process.env["db_password"],
+                userName: "NodeFuncApp",
+                password: "aN0ThErREALLY#$%TRONGpa44w0rd!",
             }
         },
         options: {
-            database: process.env["db_database"],
+            database: "TutorialDB",
             encrypt: true,
             connectTimeout: 15000,
             validateBulkLoadParameters: true
