@@ -60,22 +60,22 @@ GRANT select,insert,update,delete ON SCHEMA::[dbo] TO [NodeFuncApp];
 GO
 
 /*
-	Return details on a specific customer
+	Return details on a specific product
 */
-CREATE OR ALTER PROCEDURE web.get_customer
+CREATE OR ALTER PROCEDURE web.get_product
 @Json NVARCHAR(MAX)
 AS
 SET NOCOUNT ON;
-DECLARE @CustomerId INT = JSON_VALUE(@Json, '$.CustomerId');
+DECLARE @ProductId INT = JSON_VALUE(@Json, '$.ProductId');
 SELECT 
-	[CustomerId], 
-	[Name], 
-	[Location] AS 'Delivery.Location', 
-	[Email] AS 'Delivery.Email'
+	[id], 
+	[name], 
+	[description], 
+	[quantity]
 FROM 
-	[dbo].[Customers] 
+	[dbo].[Product] 
 WHERE 
-	[CustomerId] = @CustomerId
+	[id] = @ProductId
 FOR JSON PATH
 GO
 
@@ -133,83 +133,47 @@ DECLARE @Json2 NVARCHAR(MAX) = N'{"CustomerID": ' + CAST(@CustomerId AS NVARCHAR
 EXEC web.get_customer @Json2;
 GO
 
+
+CREATE SEQUENCE ProductId
+    START WITH 100  
+    INCREMENT BY 1 ;  
+GO
+
 /*
-	Create a new customer
+	Create a new product
 */
 
-CREATE OR ALTER PROCEDURE web.put_customer
+CREATE OR ALTER PROCEDURE web.put_product
 @Json NVARCHAR(MAX)
 AS
 SET NOCOUNT ON;
-DECLARE @CustomerId INT = NEXT VALUE FOR Sequences.CustomerID;
+DECLARE @ProductId INT = NEXT VALUE FOR dbo.ProductId;
 WITH [source] AS 
 (
 	SELECT * FROM OPENJSON(@Json) WITH (		
-		[CustomerName] NVARCHAR(100), 
-		[PhoneNumber] NVARCHAR(20), 
-		[FaxNumber] NVARCHAR(20), 
-		[WebsiteURL] NVARCHAR(256),
-		[DeliveryAddressLine1] NVARCHAR(60) '$.Delivery.AddressLine1',
-		[DeliveryAddressLine2] NVARCHAR(60) '$.Delivery.AddressLine2',
-		[DeliveryPostalCode] NVARCHAR(10) '$.Delivery.PostalCode'	
+		[Name] NVARCHAR(50), 
+		[Description] NVARCHAR(50), 
+		[Quantity] INT
 	)
 )
-INSERT INTO [Sales].[Customers] 
+INSERT INTO [dbo].[Product] 
 (
-	CustomerID, 
-	CustomerName, 	
-	BillToCustomerID, 
-	CustomerCategoryID,	
-	PrimaryContactPersonID,
-	DeliveryMethodID,
-	DeliveryCityID,
-	PostalCityID,
-	AccountOpenedDate,
-	StandardDiscountPercentage,
-	IsStatementSent,
-	IsOnCreditHold,
-	PaymentDays,
-	PhoneNumber, 
-	FaxNumber, 
-	WebsiteURL, 
-	DeliveryAddressLine1, 
-	DeliveryAddressLine2, 
-	DeliveryPostalCode,
-	PostalAddressLine1, 
-	PostalAddressLine2, 
-	PostalPostalCode,
-	LastEditedBy
+	id, 
+	name, 	
+	description, 
+	quantity
 )
 SELECT
-	@CustomerId, 
-	CustomerName, 
-	@CustomerId, 
-	5, -- Computer Shop
-	1, -- No contact person
-	1, -- Post Delivery 
-	28561, -- Redmond
-	28561, -- Redmond
-	SYSUTCDATETIME(),
-	0.00,
-	0,
-	0,
-	30,
-	PhoneNumber, 
-	FaxNumber, 
-	WebsiteURL, 
-	DeliveryAddressLine1, 
-	DeliveryAddressLine2, 
-	DeliveryPostalCode,
-	DeliveryAddressLine1, 
-	DeliveryAddressLine2, 
-	DeliveryPostalCode,
-	1 
+	@ProductId, 
+	Name, 
+	Description, 
+	Quantity
 FROM
 	[source]
 ;
 
-DECLARE @Json2 NVARCHAR(MAX) = N'{"CustomerID": ' + CAST(@CustomerId AS NVARCHAR(9)) + N'}'
-EXEC web.get_customer @Json2;
+DECLARE @Json2 NVARCHAR(MAX) = N'{"ProductId": ' + CAST(@ProductId AS NVARCHAR(9)) + N'}'
+EXEC web.get_product @Json2;
 GO
 
 CREATE OR ALTER PROCEDURE web.get_customers
