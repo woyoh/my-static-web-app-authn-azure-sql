@@ -3,6 +3,14 @@ var Request = require('tedious').Request
 var TYPES = require('tedious').TYPES;
 
 module.exports = function (context, req) {
+
+    // ユーザー情報取得
+    const header = req.headers['x-ms-client-principal'];
+    const encoded = Buffer.from(header, 'base64');
+    const decoded = encoded.toString('ascii');
+
+    context.log("プロダクト取得：開始");
+    context.log("ユーザー情報：" + decoded);
     const method = req.method.toLowerCase();
 
     var payload = null;
